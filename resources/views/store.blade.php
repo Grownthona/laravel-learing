@@ -1,0 +1,1 @@
+<a href="{{url('/storerequest')}}"> View Products</a>
