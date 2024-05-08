@@ -26,7 +26,7 @@ class AdminController extends Controller
         $products->quantity = $request['quantity'];
         //$products->warehouse_staff = $request['warehouse_staff'];
         $products->status = "Pending";
-       
+
         if($products->save()) {
             return response()->json(['message' => 'New Product Added!.'], 201);
         }else{
@@ -74,18 +74,11 @@ class AdminController extends Controller
         }
         return view("requestproduct",compact("requests"));
     }
-    
+
     public function adminproducts(){
         $products = Product :: all();
         return view("adminviewproducts",compact("products"));
     }
-
-
-
-
-
-    
-
     public function addusershow(Request $request){
         return view("adduser");
     }
@@ -95,12 +88,12 @@ class AdminController extends Controller
             'role' => 'required|string',
             'joining' => 'required|string',
             'password' => 'required|min:6']);
-    
+
         $newuser = new Inventoryuser;
         $newuser->name = $request['name'];
         $newuser->role = $request['role'];
         $newuser->joining = $request['joining'];
-        $newuser->password = Hash::make($request['password'], ['rounds' => 12]); 
+        $newuser->password = Hash::make($request['password'], ['rounds' => 12]);
 
         $findusename = Inventoryuser :: where('name',$request['name'])->first();
         if($findusename){
@@ -120,34 +113,33 @@ class AdminController extends Controller
         return view("signin");
     }
     public function signin(Request $request){
-        //echo "<pre>";
-        //print_r($request->all());
-        $name = $request['name'];
-        $password = $request['password'];
 
         $credentials = $request->validate([
             'name' => ['required'],
             'password' => ['required'],
         ]);
-        /*return $credentials;
-        if (Auth::attempt($credentials)) {
-            //$request->session()->regenerate();
- 
-            //return redirect()->intended('dashboard');
-            return "exists";
-        }else{
-            return "doesn't exists";
-        }*/
 
+        //changes , check it
+        $user = Inventoryuser::where('name','=',$request->name)->first();
+        if($user && $request->password == $user->password){
+            Auth::login($user);
+            if(Auth::check()){
+                return "success";
+            }else{
+                return "not logged in";
+            }
+        }else{
+          return "Error";
+        }
         
-        $finduser = Inventoryuser :: where('name',$name)->first();
+        $finduser = Inventoryuser :: where('name',$user->name)->first();
         $hashedPassword = $finduser->password;
         if(!$finduser){
             return response()->json(['message' => "This user doesn't exists!"], 500);
-        }if (!Hash::check($password, $hashedPassword)) {
+        }if (!Hash::check($user->password, $hashedPassword)) {
             return response()->json(['message' => "Password doesn't match!"], 500);
         }
-    
+
         $role = $finduser->role;
         session()->put('role', $role);
 
@@ -161,7 +153,7 @@ class AdminController extends Controller
 
         return "Error!";
 
-        
+
     }
     public function staffinfo(){
         $users = Inventoryuser :: all();
@@ -172,5 +164,5 @@ class AdminController extends Controller
         $requests = RequestInven :: all();
         return view("allrequests",compact("requests"));
     }
-   
+
 }
