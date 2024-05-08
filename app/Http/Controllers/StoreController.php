@@ -47,6 +47,12 @@ class StoreController extends Controller
         $new_req->date = $request["date"];
         $new_req->pid = $request["id"];
 
+        $find_prod = Product :: find($request["id"]);
+        $remaining = (int)$find_prod->quantity - (int)$request["stock"];
+        if($remaining <0){
+            return response()->json(['message' => 'The stock amount is too high!'], 500);
+        }
+
         if($new_req ->save()) {
             /*$flag = Store :: count();
             if($flag==0){

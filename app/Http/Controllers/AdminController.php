@@ -75,6 +75,10 @@ class AdminController extends Controller
         return view("requestproduct",compact("requests"));
     }
     
+    public function adminproducts(){
+        $products = Product :: all();
+        return view("adminviewproducts",compact("products"));
+    }
 
 
 
@@ -131,9 +135,7 @@ class AdminController extends Controller
         }
     
         $role = $finduser->role;
-        session(['role' => $role]);
-
-        return session(['role']);
+        session()->put('role', $role);
 
         if($role == "Warehouse Staff"){
             return redirect('/warehouse');

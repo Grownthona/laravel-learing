@@ -5,7 +5,23 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\StoreController;
 
+Route::get('/', function () {
+    if(session()->has('role')){
+        if(session('role')=="Admin"){
+            return redirect('/admin');
+        }else if(session('role')=="Warehouse Staff"){
+            return redirect('/warehouse');
+        }else{
+            return redirect('/store');
+        }
+    }else{
+        return redirect('/signin');
+    }
+});
 
+Route::get('/logout', function (){
+    return session()->flush();
+});
 Route::get('/admin', function () {
     return view('admin');
 });
@@ -20,6 +36,8 @@ Route::get('/store', function () {
 
 Route::get('/addproduct', [AdminController::class, 'showaddproduct']);
 Route::post('/addproduct', [AdminController::class, 'addproduct'])->name('products.add');
+
+Route::get('/adminproducts', [AdminController::class, 'adminproducts']);
 
 Route::get('/products', [WarehouseController::class, 'showproduct']);
 Route::post('/products', [WarehouseController::class, 'updateproduct'])->name('update.product');
