@@ -45,6 +45,10 @@ Route::post('/products', [WarehouseController::class, 'updateproduct'])->name('u
 Route::get('/storerequest', [StoreController::class, 'showstoreproducts']);
 Route::post('/request', [StoreController::class, 'requestproduct'])->name('request.product');
 
+Route::get('/storesummary', [StoreController::class, 'storestoresummary']);
+
+
+
 Route::get('/adminstorerequests', [AdminController::class, 'adminstorerequests']);
 Route::post('/approvestorerequests', [AdminController::class, 'approvestorerequests'])->name('approve.store');
 

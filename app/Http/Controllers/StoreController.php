@@ -36,6 +36,12 @@ class StoreController extends Controller
 
     }
 
+    public function storestoresummary(){
+        $requests = Store :: all();
+
+        return view("storesummary",compact("requests"));
+    }
+
     public function requestproduct(Request $request){
 
         $new_req = new Store;
