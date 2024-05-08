@@ -94,7 +94,7 @@ class AdminController extends Controller
             'name' => 'required|string',
             'role' => 'required|string',
             'joining' => 'required|string',
-            'password' => 'required|string|min:6']);
+            'password' => 'required|min:6']);
     
         $newuser = new Inventoryuser;
         $newuser->name = $request['name'];
@@ -125,6 +125,20 @@ class AdminController extends Controller
         $name = $request['name'];
         $password = $request['password'];
 
+        $credentials = $request->validate([
+            'name' => ['required'],
+            'password' => ['required'],
+        ]);
+        /*return $credentials;
+        if (Auth::attempt($credentials)) {
+            //$request->session()->regenerate();
+ 
+            //return redirect()->intended('dashboard');
+            return "exists";
+        }else{
+            return "doesn't exists";
+        }*/
+
         
         $finduser = Inventoryuser :: where('name',$name)->first();
         $hashedPassword = $finduser->password;
@@ -146,6 +160,8 @@ class AdminController extends Controller
         }
 
         return "Error!";
+
+        
     }
     public function staffinfo(){
         $users = Inventoryuser :: all();
